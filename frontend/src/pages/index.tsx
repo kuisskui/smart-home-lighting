@@ -1,37 +1,44 @@
 import { type NextPage } from "next";
 import Head from "next/head";
-import Link from "next/link";
 import { useState } from "react";
 import Card from "../components/Card/Card";
 
 export type Room = {
+  id: number;
   name: string;
   isOn: boolean;
   isAuto: boolean;
   brightness: number;
 };
 
-const Home: NextPage = () => {
-  const [roomOne, setRoomOne] = useState<Room>({
+const rooms: Room[] = [
+  {
+    id: 1,
     name: "living room",
     isOn: false,
     isAuto: false,
     brightness: 20,
-  });
-
-  const [roomTwo, setRoomTwo] = useState<Room>({
+  },
+  {
+    id: 2,
     name: "bedroom",
     isOn: false,
     isAuto: false,
     brightness: 20,
-  });
-
-  const [roomThree, setRoomThree] = useState<Room>({
+  },
+  {
+    id: 3,
     name: "kitchen",
     isOn: false,
     isAuto: false,
     brightness: 20,
-  });
+  },
+];
+
+const Home: NextPage = () => {
+  const [roomOne, setRoomOne] = useState<Room>(rooms[0] as Room);
+  const [roomTwo, setRoomTwo] = useState<Room>(rooms[1] as Room);
+  const [roomThree, setRoomThree] = useState<Room>(rooms[2] as Room);
 
   return (
     <>

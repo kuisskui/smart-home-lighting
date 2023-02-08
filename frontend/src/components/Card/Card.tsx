@@ -1,5 +1,6 @@
-import { Dispatch, SetStateAction } from "react";
-import { Room } from "../../pages";
+import { Dispatch, SetStateAction, useState } from "react";
+import { useEffect } from "react";
+import type { Room } from "../../pages";
 
 type CardProps = {
   room: Room;
@@ -7,20 +8,39 @@ type CardProps = {
 };
 
 const Card: React.FC<CardProps> = ({ room, setRoom }) => {
+  const [nowOutput, setNowOutput] = useState<Omit<Room, "name">>(room);
+
+  useEffect(() => {
+    setNowOutput({
+      id: room.id,
+      isOn: room.isOn,
+      isAuto: room.isAuto,
+      brightness: (room.brightness / 100) * 255,
+    });
+  }, [room]);
   return (
     <div className="card h-[450px] w-96 bg-base-100 shadow-xl">
-      <figure className="h-96 px-10 pt-10  overflow-visible">
+      <figure className="h-96 overflow-visible px-10  pt-10">
         <label className="swap swap-flip text-9xl ">
-          
-        <input
+          <input
             type="checkbox"
             checked={room?.isOn}
             onClick={() => setRoom({ ...room, isOn: !room.isOn })}
           />
-          <div className="swap-on flex justify-center items-center "><img className="w-32 h-32 m-auto drop-shadow-[0_0px_40px_rgba(255,240,0,0.65)]"
-          src="https://images.emojiterra.com/google/noto-emoji/v2.034/512px/1f4a1.png" alt="" /></div>
-          <div className="swap-off flex justify-center items-center"><img className= "grayscale-[70%] w-32 h-32 m-auto " src="https://images.emojiterra.com/google/noto-emoji/v2.034/512px/1f4a1.png" alt="" /></div>
-
+          <div className="swap-on flex items-center justify-center ">
+            <img
+              className="m-auto h-32 w-32 drop-shadow-[0_0px_40px_rgba(255,240,0,0.65)]"
+              src="https://images.emojiterra.com/google/noto-emoji/v2.034/512px/1f4a1.png"
+              alt=""
+            />
+          </div>
+          <div className="swap-off flex items-center justify-center">
+            <img
+              className="m-auto h-32 w-32 grayscale-[70%] "
+              src="https://images.emojiterra.com/google/noto-emoji/v2.034/512px/1f4a1.png"
+              alt=""
+            />
+          </div>
         </label>
       </figure>
       <div className="card-body items-center text-center">
@@ -36,8 +56,7 @@ const Card: React.FC<CardProps> = ({ room, setRoom }) => {
             onChange={(e) =>
               setRoom({
                 ...room,
-                brightness:
-                  parseInt(e.target.value) >20 ? parseInt(e.target.value) : 20,
+                brightness: Number(e.target.value),
               })
             }
             className="range range-warning"
@@ -65,6 +84,9 @@ const Card: React.FC<CardProps> = ({ room, setRoom }) => {
           </div>
         </div>
       </div>
+      <pre>
+        <code>{JSON.stringify(nowOutput, null, 2)}</code>
+      </pre>
     </div>
   );
 };
