@@ -9,13 +9,15 @@ import data as data
 
 class Id(BaseModel):
     id: str
-    
+
+
 class Light(BaseModel):
     id: Union[str, int]
     status: bool
     auto: int
     brightness: int
     ldr: int
+
 
 app = FastAPI()
 
@@ -29,15 +31,22 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 @app.post("/")
 def root():
     return {"msg": "smart-home-lighting"}
 
+
 @app.post("/tap/send/")
 def send(light: Id):
-    return data.collection.find_one({"id":f"{light.id}"}, {"_id": False})
+    return data.collection.find_one({"id": f"{light.id}"}, {"_id": False})
 
     # return {"light": server}
+
+
+@app.get("/tap/send/{id}/")
+def abobo(id: str):
+    return data.collection.find_one({"id": str(id)}, {"_id": False})
 
 
 @app.post("/tap/receive/")
