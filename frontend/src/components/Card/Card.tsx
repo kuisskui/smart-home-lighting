@@ -1,5 +1,7 @@
 import axios from "axios";
-import { Dispatch, SetStateAction, useState } from "react";
+import type { Dispatch, SetStateAction } from "react";
+import { useState } from "react";
+
 import { useEffect } from "react";
 import type { Room } from "../../pages";
 
@@ -14,7 +16,7 @@ const Card: React.FC<CardProps> = ({ room, setRoom }) => {
   // get server status every 0.5 second
   // const interval = setInterval(() => {
   //   axios
-  //     .get(`http://localhost:8000/api/getLight/${room.id}`)
+  //     .post(`http://localhost:8000/tap/send/${room.id}`)
   //     .then((res) => {
   //       const data = res.data as Omit<Room, "name">;
 
@@ -43,7 +45,7 @@ const Card: React.FC<CardProps> = ({ room, setRoom }) => {
     });
 
     axios
-      .post("http://localhost:8000/api/setLight", {
+      .post(`http://localhost:8000/tap/receive/${room.id}`, {
         id: room.id,
         status: room.status,
         auto: room.auto,
