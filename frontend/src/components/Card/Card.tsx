@@ -1,5 +1,7 @@
 import axios from "axios";
-import { Dispatch, SetStateAction, useState } from "react";
+import type { Dispatch, SetStateAction } from "react";
+import { useState } from "react";
+
 import { useEffect } from "react";
 import type { Room } from "../../pages";
 
@@ -12,41 +14,43 @@ const Card: React.FC<CardProps> = ({ room, setRoom }) => {
   const [nowOutput, setNowOutput] = useState<Omit<Room, "name">>(room);
 
   // get server status every 0.5 second
-  // const interval = setInterval(() => {
-  //   axios
-  //     .get(`http://localhost:8000/api/getLight/${room.id}`)
-  //     .then((res) => {
-  //       const data = res.data as Omit<Room, "name">;
+  const interval = setInterval(() => {
+    axios
+      .get(`http://group1.exceed19.online/tap/send/${room.id}`)
+      .then((res) => {
+        const data = res.data as Omit<Room, "name">;
 
-  //       if (data.isOn !== room.isOn) {
-  //         setRoom({ ...room, isOn: data.isOn });
-  //       }
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //     });
-  // }, 500);
+        if (data.status !== room.status) {
+          setRoom({ ...room, status: data.status });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, 5000);
 
-  // useEffect(() => {
-  //   return () => {
-  //     clearInterval(interval);
-  //   };
-  // }, [interval]);
+  useEffect(() => {
+    return () => {
+      clearInterval(interval);
+    };
+  }, [interval]);
 
   useEffect(() => {
     setNowOutput({
       id: room.id,
-      isOn: room.isOn,
-      isAuto: room.isAuto,
+      status: room.status,
+      auto: room.auto,
       brightness: (room.brightness / 100) * 255,
+      ldr: -1,
     });
 
     axios
-      .post("http://localhost:8000/api/setLight", {
+      .post(`http://group1.exceed19.online/tap/receive/`, {
         id: room.id,
-        isOn: room.isOn,
-        isAuto: room.isAuto,
+        status: room.status,
+        auto: room.auto,
         brightness: (room.brightness / 100) * 255,
+        ldr: -1,
       })
       .then((res) => {
         console.log(res.data);
@@ -62,13 +66,15 @@ const Card: React.FC<CardProps> = ({ room, setRoom }) => {
         <label className="swap swap-flip text-9xl ">
           <input
             type="checkbox"
-            defaultChecked={room?.isOn}
-            disabled={room?.isAuto}
-            onClick={() => setRoom({ ...room, isOn: !room.isOn })}
+            defaultChecked={room?.status}
+            disabled={room?.auto}
+            onClick={() => setRoom({ ...room, status: !room.status })}
           />
           <div className="swap-on flex items-center justify-center ">
             <img
-              className="m-auto h-32 w-32 drop-shadow-[0_0px_40px_rgba(255,240,0,0.65)]"
+              className={
+                "m-auto h-32 w-32 drop-shadow-[0_0_40px_rgba(255,240,0,0.65)]"
+              }
               src="https://images.emojiterra.com/google/noto-emoji/v2.034/512px/1f4a1.png"
               alt=""
             />
@@ -84,7 +90,7 @@ const Card: React.FC<CardProps> = ({ room, setRoom }) => {
       </figure>
       <div className="card-body items-center text-center">
         <h2 className="card-title mb-8 text-3xl">{`${room.name}  ${
-          room.isOn ? "on" : "off"
+          room.status ? "on" : "off"
         } ${room.brightness} %`}</h2>
         <div className="card-actions items-center justify-center gap-5">
           <input
@@ -111,21 +117,21 @@ const Card: React.FC<CardProps> = ({ room, setRoom }) => {
           <div className="form-control w-52">
             <label className="label cursor-pointer">
               <span className="label-text">
-                auto light {room.isAuto ? "on" : "off"}
+                auto light {room.auto ? "on" : "off"}
               </span>
               <input
                 type="checkbox"
                 className="toggle-success toggle "
-                defaultChecked={room.isAuto}
-                onClick={() => setRoom({ ...room, isAuto: !room.isAuto })}
+                defaultChecked={room.auto}
+                onClick={() => setRoom({ ...room, auto: !room.auto })}
               />
             </label>
           </div>
         </div>
       </div>
-      <pre>
+      {/* <pre>
         <code>{JSON.stringify(nowOutput, null, 2)}</code>
-      </pre>
+      </pre> */}
     </div>
   );
 };
