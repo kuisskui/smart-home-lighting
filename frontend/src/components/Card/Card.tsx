@@ -34,7 +34,7 @@ const Card: React.FC<CardProps> = ({ room, setRoom }) => {
               setRoom({
                 ...room,
                 brightness:
-                  parseInt(e.target.value) > 20 ? parseInt(e.target.value) : 20,
+                  parseInt(e.target.value) > 25 ? parseInt(e.target.value) : 25,
               })
             }
             className="range range-warning"
