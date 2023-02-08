@@ -11,13 +11,14 @@ class Light(BaseModel):
     id: Union[int, str]
     status: bool   
     auto: bool
+    brightness: int
 
 app = FastAPI()
 
 
 @app.get("/")
 def root():
-    return {"msg": "pick a locker"}
+    return {"msg": "smart-home-lighting"}
 
 
 @app.get("/tap/")
