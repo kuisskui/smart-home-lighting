@@ -71,8 +71,9 @@ const Card: React.FC<CardProps> = ({ room, setRoom }) => {
             onClick={() => setRoom({ ...room, status: !room.status })}
           />
           <div className="swap-on flex items-center justify-center ">
+
             <img
-              className="m-auto h-32 w-32 drop-shadow-[0_0px_40px_rgba(255,240,0,0.65)]"
+              className={`m-auto h-32 w-32 drop-shadow-[0_0px_40px_rgba(255,240,0,${room.brightness/100})]`}
               src="https://images.emojiterra.com/google/noto-emoji/v2.034/512px/1f4a1.png"
               alt=""
             />
