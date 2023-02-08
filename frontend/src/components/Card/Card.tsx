@@ -11,13 +11,16 @@ const Card: React.FC<CardProps> = ({ room, setRoom }) => {
     <div className="card h-[450px] w-96 bg-base-100 shadow-xl">
       <figure className="h-96 px-10 pt-10">
         <label className="swap swap-flip text-9xl ">
-          <input
+          
+        <input
             type="checkbox"
             checked={room?.isOn}
             onClick={() => setRoom({ ...room, isOn: !room.isOn })}
           />
-          <div className="swap-on">🌝</div>
-          <div className="swap-off">🌚</div>
+          <div className="swap-on flex justify-center items-center"><img className="w-32 h-32 m-auto"
+          src="https://images.emojiterra.com/google/noto-emoji/v2.034/512px/1f4a1.png" alt="" /></div>
+          <div className="swap-off flex justify-center items-center"><img className= "grayscale-[70%] w-32 h-32 m-auto " src="https://images.emojiterra.com/google/noto-emoji/v2.034/512px/1f4a1.png" alt="" /></div>
+
         </label>
       </figure>
       <div className="card-body items-center text-center">
@@ -27,18 +30,18 @@ const Card: React.FC<CardProps> = ({ room, setRoom }) => {
         <div className="card-actions items-center justify-center gap-5">
           <input
             type="range"
-            min="0"
+            min="20"
             max="100"
             value={room.brightness}
             onChange={(e) =>
               setRoom({
                 ...room,
                 brightness:
-                  parseInt(e.target.value) > 25 ? parseInt(e.target.value) : 25,
+                  parseInt(e.target.value) >20 ? parseInt(e.target.value) : 20,
               })
             }
             className="range range-warning"
-            step="25"
+            step="20"
           />
           <div className="flex w-full justify-between px-2 text-xs">
             <span>|</span>
