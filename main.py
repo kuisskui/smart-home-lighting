@@ -36,20 +36,21 @@ def receive(light: Light):
         info = data.collection.find({"id": str(light.id)}, {"_id": False})
         var = list(info)[0]
         ldr = var['ldr']
-        if ldr >= 125:
+        auto = var['auto']
+        if ldr >= 125 and auto == True:
             data.collection.update_one({"id": str(light.id)},
                                        {"$set": {
                                            "id": light.id,
                                            "status": False,
-                                           "auto": True,
+                                           "auto": light.auto,
                                            "brightness": light.brightness,
                                            "ldr": light.ldr}})
-        if 0 <= ldr <= 124:
+        if 0 <= ldr <= 124 and auto == True:
             data.collection.update_one({"id": str(light.id)},
                                        {"$set": {
                                            "id": light.id,
                                            "status": True,
-                                           "auto": True,
+                                           "auto": light.auto,
                                            "brightness": light.brightness,
                                            "ldr": light.ldr}})
         else:
