@@ -2,6 +2,8 @@ from fastapi import FastAPI, Body, HTTPException
 import uvicorn
 from typing import Union, Optional, List
 from pydantic import BaseModel
+from fastapi.middleware.cors import CORSMiddleware
+
 import data as data
 
 
@@ -17,6 +19,15 @@ class Light(BaseModel):
 
 app = FastAPI()
 
+origins = ["*"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.post("/")
 def root():
