@@ -9,7 +9,7 @@ type CardProps = {
 const Card: React.FC<CardProps> = ({ room, setRoom }) => {
   return (
     <div className="card h-[450px] w-96 bg-base-100 shadow-xl">
-      <figure className="h-96 px-10 pt-10">
+      <figure className="h-96 px-10 pt-10  overflow-visible">
         <label className="swap swap-flip text-9xl ">
           
         <input
@@ -17,7 +17,7 @@ const Card: React.FC<CardProps> = ({ room, setRoom }) => {
             checked={room?.isOn}
             onClick={() => setRoom({ ...room, isOn: !room.isOn })}
           />
-          <div className="swap-on flex justify-center items-center"><img className="w-32 h-32 m-auto"
+          <div className="swap-on flex justify-center items-center "><img className="w-32 h-32 m-auto drop-shadow-[0_0px_40px_rgba(255,240,0,0.65)]"
           src="https://images.emojiterra.com/google/noto-emoji/v2.034/512px/1f4a1.png" alt="" /></div>
           <div className="swap-off flex justify-center items-center"><img className= "grayscale-[70%] w-32 h-32 m-auto " src="https://images.emojiterra.com/google/noto-emoji/v2.034/512px/1f4a1.png" alt="" /></div>
 
