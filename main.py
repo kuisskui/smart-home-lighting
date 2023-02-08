@@ -33,15 +33,34 @@ def send(light: Light):
 def receive(light: Light):
     try:
         # find data
-        data.collection.find({"id": str(light.id)}, {"_id": False})
-        # update
-        data.collection.update_one({"id": str(light.id)},
-                                   {"$set": {
-                                    "id": light.id,
-                                    "status": light.status,
-                                    "auto": light.auto,
-                                    "brightness": light.brightness,
-                                    "ldr": light.ldr}})
+        info = data.collection.find({"id": str(light.id)}, {"_id": False})
+        var = list(info)[0]
+        ldr = var['ldr']
+        if ldr >= 125:
+            data.collection.update_one({"id": str(light.id)},
+                                       {"$set": {
+                                           "id": light.id,
+                                           "status": False,
+                                           "auto": True,
+                                           "brightness": light.brightness,
+                                           "ldr": light.ldr}})
+        if 0 <= ldr <= 124:
+            data.collection.update_one({"id": str(light.id)},
+                                       {"$set": {
+                                           "id": light.id,
+                                           "status": True,
+                                           "auto": True,
+                                           "brightness": light.brightness,
+                                           "ldr": light.ldr}})
+        else:
+            # update
+            data.collection.update_one({"id": str(light.id)},
+                                       {"$set": {
+                                        "id": light.id,
+                                        "status": light.status,
+                                        "auto": light.auto,
+                                        "brightness": light.brightness,
+                                        "ldr": light.ldr}})
     except Exception:
         raise HTTPException(500, "ID not found")
 
