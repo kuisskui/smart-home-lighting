@@ -6,31 +6,32 @@ import Card from "../components/Card/Card";
 export type Room = {
   id: number;
   name: string;
-  isOn: boolean;
-  isAuto: boolean;
+  status: boolean;
+  auto: boolean;
   brightness: number;
+  ldr?: number;
 };
 
 const rooms: Room[] = [
   {
     id: 1,
     name: "living room",
-    isOn: false,
-    isAuto: false,
+    status: false,
+    auto: false,
     brightness: 20,
   },
   {
     id: 2,
     name: "bedroom",
-    isOn: false,
-    isAuto: false,
+    status: false,
+    auto: false,
     brightness: 20,
   },
   {
     id: 3,
     name: "kitchen",
-    isOn: false,
-    isAuto: false,
+    status: false,
+    auto: false,
     brightness: 20,
   },
 ];

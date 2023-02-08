@@ -18,8 +18,8 @@ const Card: React.FC<CardProps> = ({ room, setRoom }) => {
   //     .then((res) => {
   //       const data = res.data as Omit<Room, "name">;
 
-  //       if (data.isOn !== room.isOn) {
-  //         setRoom({ ...room, isOn: data.isOn });
+  //       if (data.status !== room.status) {
+  //         setRoom({ ...room, status: data.status });
   //       }
   //     })
   //     .catch((err) => {
@@ -36,17 +36,19 @@ const Card: React.FC<CardProps> = ({ room, setRoom }) => {
   useEffect(() => {
     setNowOutput({
       id: room.id,
-      isOn: room.isOn,
-      isAuto: room.isAuto,
+      status: room.status,
+      auto: room.auto,
       brightness: (room.brightness / 100) * 255,
+      ldr: -1,
     });
 
     axios
       .post("http://localhost:8000/api/setLight", {
         id: room.id,
-        isOn: room.isOn,
-        isAuto: room.isAuto,
+        status: room.status,
+        auto: room.auto,
         brightness: (room.brightness / 100) * 255,
+        ldr: -1,
       })
       .then((res) => {
         console.log(res.data);
@@ -62,9 +64,9 @@ const Card: React.FC<CardProps> = ({ room, setRoom }) => {
         <label className="swap swap-flip text-9xl ">
           <input
             type="checkbox"
-            defaultChecked={room?.isOn}
-            disabled={room?.isAuto}
-            onClick={() => setRoom({ ...room, isOn: !room.isOn })}
+            defaultChecked={room?.status}
+            disabled={room?.auto}
+            onClick={() => setRoom({ ...room, status: !room.status })}
           />
           <div className="swap-on flex items-center justify-center ">
             <img
@@ -84,7 +86,7 @@ const Card: React.FC<CardProps> = ({ room, setRoom }) => {
       </figure>
       <div className="card-body items-center text-center">
         <h2 className="card-title mb-8 text-3xl">{`${room.name}  ${
-          room.isOn ? "on" : "off"
+          room.status ? "on" : "off"
         } ${room.brightness} %`}</h2>
         <div className="card-actions items-center justify-center gap-5">
           <input
@@ -111,13 +113,13 @@ const Card: React.FC<CardProps> = ({ room, setRoom }) => {
           <div className="form-control w-52">
             <label className="label cursor-pointer">
               <span className="label-text">
-                auto light {room.isAuto ? "on" : "off"}
+                auto light {room.auto ? "on" : "off"}
               </span>
               <input
                 type="checkbox"
                 className="toggle-success toggle "
-                defaultChecked={room.isAuto}
-                onClick={() => setRoom({ ...room, isAuto: !room.isAuto })}
+                defaultChecked={room.auto}
+                onClick={() => setRoom({ ...room, auto: !room.auto })}
               />
             </label>
           </div>
