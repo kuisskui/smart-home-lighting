@@ -11,6 +11,28 @@ type CardProps = {
 const Card: React.FC<CardProps> = ({ room, setRoom }) => {
   const [nowOutput, setNowOutput] = useState<Omit<Room, "name">>(room);
 
+  // get server status every 0.5 second
+  // const interval = setInterval(() => {
+  //   axios
+  //     .get(`http://localhost:8000/api/getLight/${room.id}`)
+  //     .then((res) => {
+  //       const data = res.data as Omit<Room, "name">;
+
+  //       if (data.isOn !== room.isOn) {
+  //         setRoom({ ...room, isOn: data.isOn });
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
+  // }, 500);
+
+  // useEffect(() => {
+  //   return () => {
+  //     clearInterval(interval);
+  //   };
+  // }, [interval]);
+
   useEffect(() => {
     setNowOutput({
       id: room.id,
@@ -33,13 +55,14 @@ const Card: React.FC<CardProps> = ({ room, setRoom }) => {
         console.log(err);
       });
   }, [room]);
+
   return (
     <div className="card h-[450px] w-96 bg-base-100 shadow-xl">
       <figure className="h-96 overflow-visible px-10  pt-10">
         <label className="swap swap-flip text-9xl ">
           <input
             type="checkbox"
-            checked={room?.isOn}
+            defaultChecked={room?.isOn}
             disabled={room?.isAuto}
             onClick={() => setRoom({ ...room, isOn: !room.isOn })}
           />
@@ -93,7 +116,7 @@ const Card: React.FC<CardProps> = ({ room, setRoom }) => {
               <input
                 type="checkbox"
                 className="toggle-success toggle "
-                checked={room.isAuto}
+                defaultChecked={room.isAuto}
                 onClick={() => setRoom({ ...room, isAuto: !room.isAuto })}
               />
             </label>
