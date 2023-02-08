@@ -2,6 +2,7 @@
 #include <HTTPClient.h>
 #include <ArduinoJson.h>
 #include <Bounce2.h>
+#include <iostream>
 #include <string>
 
 #define BUTTON 27
@@ -23,22 +24,12 @@ bool buttonState[4] = {false, false, false, false};
 const char *ssid = "Qwerty";
 const char *password = "12345678";
 
-const String UpdateUrl = "http://127.0.0.1/tap/receive/";
-const String CheckUrl = "http://127.0.0.1/tap/send/";
-
-String int_to_string(int num) {
-  String str = int_to_string(num);
-  return str;
-}
-
-int string_to_int(String str) {
-  int num = string_to_int(str);
-  return num;
-}
+const String UpdateUrl = "http://group1.exceed19.online/tap/receive/";
+const String CheckUrl = "http://group1.exceed19.online/tap/send/";
 
 void Connect_Wifi();
 
-void POST_Update(String id, int Brightness, bool Status, bool Auto, int Ldr);
+void POST_Update(int id, bool Status, int Ldr);
 void POST_Check(int ids);
 
 void setup() {
@@ -135,10 +126,9 @@ void POST_Update(int ids, bool Statuss, int Ldrs) {
     HTTPClient http;
     http.begin(UpdateUrl);
     http.addHeader("Content-Type", "application/json");
-
+    http.setTimeout(10000);
     DynamicJsonDocument doc(256);
-    String idss = int_to_string(ids);
-    doc["Id"] = idss;
+    doc["Id"] = ids;
     doc["Brightness"] = -1;
     doc["Status"] = Statuss;
     doc["Auto"] = -1;
@@ -161,8 +151,9 @@ void POST_Update(int ids, bool Statuss, int Ldrs) {
 void POST_Check(int ids) {
     String json;
     HTTPClient http;
-    http.begin(UpdateUrl);
+    http.begin(CheckUrl);
     http.addHeader("Content-Type", "application/json");
+    http.setTimeout(10000);
 
     DynamicJsonDocument doc(256);
     DynamicJsonDocument doc2(256);
@@ -173,10 +164,10 @@ void POST_Check(int ids) {
     if (httpResponseCode == 200) {
       String payload = http.getString();
       deserializeJson(doc2, payload);
-      Id = string_to_int(doc2["Id"].as<String>());
-      Brightness = doc2["Brightness"];
-      Status = doc2["Status"];
-      Auto = doc2["Auto"];
+      Id = doc2["Id"].as<int>();
+      Brightness = doc2["Brightness"].as<int>();
+      Status = doc2["Status"].as<bool>();
+      Auto = doc2["Auto"].as<int>();
       Serial.print("Done");
       Serial.println();
     }
