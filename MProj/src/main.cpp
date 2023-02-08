@@ -16,6 +16,10 @@ int Brightness;
 bool Status;
 int Auto;
 
+bool touch[4] = {false, false, false, false};
+bool peak[4] = {true, true, true, true};
+bool buttonState[4] = {false, false, false, false};
+
 const char *ssid = "Qwerty";
 const char *password = "12345678";
 
@@ -44,6 +48,71 @@ void setup() {
 }
 
 void loop() {
+  int LDRValue = map(analogRead(LDR), 0, 4095, 0, 255);
+  POST_Check(1);
+  if (Auto == false)
+  {
+    if(touchRead(1) > 20 && !peak[1]) {
+      peak[1] = true;
+      if (touch[1] == true) {
+        touch[1] = false;
+        buttonState[1] = !buttonState[1];
+      }
+    } 
+    else if(touchRead(2) < 20 && peak[1]) {
+      peak[1] = false;
+      touch[1] = true;
+    }
+    POST_Update(1, buttonState[1], LDRValue);
+  }
+
+  if (Status)
+  {
+    ledcWrite(0, Brightness);
+  }
+
+  POST_Check(2);
+  if (Auto == false)
+  {
+    if(touchRead(2) > 20 && !peak[2]) {
+      peak[2] = true;
+      if (touch[2] == true) {
+        touch[2] = false;
+        buttonState[2] = !buttonState[2];
+      }
+    } 
+    else if(touchRead(15) < 20 && peak[2]) {
+      peak[2] = false;
+      touch[2] = true;
+    }
+    POST_Update(2, buttonState[2], LDRValue);
+  }
+  POST_Update(2, Status, LDRValue);
+  if (Status)
+  {
+    ledcWrite(1, Brightness);
+  }
+
+  POST_Check(3);
+  if (Auto == false)
+  {
+    if(touchRead(3) > 20 && !peak[3]) {
+      peak[3] = true;
+      if (touch[3] == true) {
+        touch[3] = false;
+        buttonState[3] = !buttonState[3];
+      }
+    } 
+    else if(touchRead(4) < 20 && peak[3]) {
+      peak[3] = false;
+      touch[3] = true;
+    }
+  }
+  POST_Update(3, buttonState[3], LDRValue);
+  if (Status)
+  {
+    ledcWrite(2, Brightness);
+  }
 }
 
 void Connect_Wifi()
