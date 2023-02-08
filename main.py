@@ -11,6 +11,7 @@ class Light(BaseModel):
     id: Union[int, str]
     status: bool   
     auto: bool
+    brightness: int
 
 app = FastAPI()
 
