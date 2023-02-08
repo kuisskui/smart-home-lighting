@@ -13,6 +13,7 @@ class Light(BaseModel):
     status: bool
     auto: bool
     brightness: int
+    ldr: int
 
 
 app = FastAPI()
@@ -28,12 +29,19 @@ def send(light: Light):
     return {"light": light}
 
 
-@app.post("/tap/receive")
+@app.post("/tap/receive/")
 def receive(light: Light):
     try:
-        info = data.collection.find({"id": str(id)}, {"_id": False})
-        var = list(info)[0]
-        data.collection.update_one()
+        # find data
+        data.collection.find({"id": str(light.id)}, {"_id": False})
+        # update
+        data.collection.update_one({"id": str(light.id)},
+                                   {"$set": {
+                                    "id": light.id,
+                                    "status": light.status,
+                                    "auto": light.auto,
+                                    "brightness": light.brightness,
+                                    "ldr": light.ldr}})
     except Exception:
         raise HTTPException(500, "ID not found")
 
