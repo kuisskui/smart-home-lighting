@@ -11,7 +11,7 @@ class Id(BaseModel):
 class Light(BaseModel):
     id: Union[str, int]
     status: bool
-    auto: bool
+    auto: int
     brightness: int
     ldr: int
 
@@ -35,25 +35,27 @@ def receive(light: Light):
         # find data
         info = data.collection.find({"id": str(light.id)}, {"_id": False})
         var = list(info)[0]
-        ldr = var['ldr']
-        auto = var['auto']
-        if ldr >= 125 and auto == True:
+        ldr = var['ldr']  # default value on database
+        auto = var['auto']  # default value on database
+        brightness = var['brightness']  # default value on database
+        # hardware
+        if light.ldr >= 125 and auto == 1:
             data.collection.update_one({"id": str(light.id)},
                                        {"$set": {
                                            "id": str(light.id),
                                            "status": False,
-                                           "auto": light.auto,
-                                           "brightness": light.brightness,
+                                           "auto": auto,
+                                           "brightness": brightness,
                                            "ldr": light.ldr}})
-        elif 0 <= ldr <= 124 and auto == True:
+        elif 0 <= light.ldr <= 124 and auto == 1:
             data.collection.update_one({"id": str(light.id)},
                                        {"$set": {
                                            "id": str(light.id),
                                            "status": True,
-                                           "auto": light.auto,
-                                           "brightness": light.brightness,
+                                           "auto": auto,
+                                           "brightness": brightness,
                                            "ldr": light.ldr}})
-        else:
+        else:  # front
             # update
             data.collection.update_one({"id": str(light.id)},
                                        {"$set": {
@@ -61,7 +63,7 @@ def receive(light: Light):
                                         "status": light.status,
                                         "auto": light.auto,
                                         "brightness": light.brightness,
-                                        "ldr": light.ldr}})
+                                        "ldr": ldr}})
     except Exception:
         raise HTTPException(500, "ID not found")
     new_data = data.collection.find_one({"id": light.id}, {"_id": False})
