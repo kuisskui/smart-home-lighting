@@ -25,6 +25,7 @@ const Card: React.FC<CardProps> = ({ room, setRoom }) => {
           <input
             type="checkbox"
             checked={room?.isOn}
+            disabled={room?.isAuto}
             onClick={() => setRoom({ ...room, isOn: !room.isOn })}
           />
           <div className="swap-on flex items-center justify-center ">
