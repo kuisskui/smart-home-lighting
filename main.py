@@ -21,8 +21,12 @@ def root():
     return {"msg": "smart-home-lighting"}
 
 
-@app.get("/tap/")
+@app.post("/tap/")
 def send(light: Light):
+    return {"light": light}
+
+@app.post("/tap/")
+def receive(light: Light):
     return {"light": light}
     
 
