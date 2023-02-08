@@ -1,3 +1,4 @@
+import axios from "axios";
 import { Dispatch, SetStateAction, useState } from "react";
 import { useEffect } from "react";
 import type { Room } from "../../pages";
@@ -17,6 +18,20 @@ const Card: React.FC<CardProps> = ({ room, setRoom }) => {
       isAuto: room.isAuto,
       brightness: (room.brightness / 100) * 255,
     });
+
+    axios
+      .post("http://localhost:8000/api/setLight", {
+        id: room.id,
+        isOn: room.isOn,
+        isAuto: room.isAuto,
+        brightness: (room.brightness / 100) * 255,
+      })
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }, [room]);
   return (
     <div className="card h-[450px] w-96 bg-base-100 shadow-xl">
