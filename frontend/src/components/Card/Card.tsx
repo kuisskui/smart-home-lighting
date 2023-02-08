@@ -14,26 +14,26 @@ const Card: React.FC<CardProps> = ({ room, setRoom }) => {
   const [nowOutput, setNowOutput] = useState<Omit<Room, "name">>(room);
 
   // get server status every 0.5 second
-  // const interval = setInterval(() => {
-  //   axios
-  //     .post(`http://localhost:8000/tap/send/${room.id}`)
-  //     .then((res) => {
-  //       const data = res.data as Omit<Room, "name">;
+  const interval = setInterval(() => {
+    axios
+      .get(`http://group1.exceed19.online/tap/send/${room.id}`)
+      .then((res) => {
+        const data = res.data as Omit<Room, "name">;
 
-  //       if (data.status !== room.status) {
-  //         setRoom({ ...room, status: data.status });
-  //       }
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //     });
-  // }, 500);
+        if (data.status !== room.status) {
+          setRoom({ ...room, status: data.status });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, 5000);
 
-  // useEffect(() => {
-  //   return () => {
-  //     clearInterval(interval);
-  //   };
-  // }, [interval]);
+  useEffect(() => {
+    return () => {
+      clearInterval(interval);
+    };
+  }, [interval]);
 
   useEffect(() => {
     setNowOutput({
@@ -45,7 +45,7 @@ const Card: React.FC<CardProps> = ({ room, setRoom }) => {
     });
 
     axios
-      .post(`http://localhost:8000/tap/receive/${room.id}`, {
+      .post(`http://group1.exceed19.online/tap/receive/`, {
         id: room.id,
         status: room.status,
         auto: room.auto,
@@ -71,9 +71,10 @@ const Card: React.FC<CardProps> = ({ room, setRoom }) => {
             onClick={() => setRoom({ ...room, status: !room.status })}
           />
           <div className="swap-on flex items-center justify-center ">
-
             <img
-              className={`m-auto h-32 w-32 drop-shadow-[0_0px_40px_rgba(255,240,0,${room.brightness/100})]`}
+              className={`m-auto h-32 w-32 drop-shadow-[0_0px_40px_rgba(255,240,0,${
+                room.brightness / 100
+              })]`}
               src="https://images.emojiterra.com/google/noto-emoji/v2.034/512px/1f4a1.png"
               alt=""
             />
