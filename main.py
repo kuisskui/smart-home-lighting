@@ -2,17 +2,14 @@ from fastapi import FastAPI, Body, HTTPException
 import uvicorn
 from typing import Union, Optional, List
 from pydantic import BaseModel
-from datetime import datetime, timedelta
 import data as data
 
-import backend.data as data
-FORMAT_DATETIME = "%Y/%m/%d %H:%M"
 
 class Id(BaseModel):
     id: str
-
+    
 class Light(BaseModel):
-    id: Union[int, str]
+    id: Union[str, int]
     status: bool
     auto: bool
     brightness: int
@@ -43,15 +40,15 @@ def receive(light: Light):
         if ldr >= 125 and auto == True:
             data.collection.update_one({"id": str(light.id)},
                                        {"$set": {
-                                           "id": light.id,
+                                           "id": str(light.id),
                                            "status": False,
                                            "auto": light.auto,
                                            "brightness": light.brightness,
                                            "ldr": light.ldr}})
-        if 0 <= ldr <= 124 and auto == True:
+        elif 0 <= ldr <= 124 and auto == True:
             data.collection.update_one({"id": str(light.id)},
                                        {"$set": {
-                                           "id": light.id,
+                                           "id": str(light.id),
                                            "status": True,
                                            "auto": light.auto,
                                            "brightness": light.brightness,
@@ -60,15 +57,15 @@ def receive(light: Light):
             # update
             data.collection.update_one({"id": str(light.id)},
                                        {"$set": {
-                                        "id": light.id,
+                                        "id": str(light.id),
                                         "status": light.status,
                                         "auto": light.auto,
                                         "brightness": light.brightness,
                                         "ldr": light.ldr}})
     except Exception:
         raise HTTPException(500, "ID not found")
-
-    return {"light": light}
+    new_data = data.collection.find_one({"id": light.id}, {"_id": False})
+    return {"light": new_data}
 
 
 if __name__ == "__main__":
