@@ -1,17 +1,19 @@
-from fastapi import FastAPI, Body
+from fastapi import FastAPI, Body, HTTPException
 import uvicorn
 from typing import Union, Optional, List
 from pydantic import BaseModel
 from datetime import datetime, timedelta
+import data as data
 
 FORMAT_DATETIME = "%Y/%m/%d %H:%M"
 
 
 class Light(BaseModel):
     id: Union[int, str]
-    status: bool   
+    status: bool
     auto: bool
     brightness: int
+
 
 app = FastAPI()
 
@@ -25,10 +27,17 @@ def root():
 def send(light: Light):
     return {"light": light}
 
+
 @app.post("/tap/receive")
 def receive(light: Light):
+    try:
+        info = data.collection.find({"id": str(id)}, {"_id": False})
+        var = list(info)[0]
+        data.collection.update_one()
+    except Exception:
+        raise HTTPException(500, "ID not found")
+
     return {"light": light}
-    
 
 
 if __name__ == "__main__":
